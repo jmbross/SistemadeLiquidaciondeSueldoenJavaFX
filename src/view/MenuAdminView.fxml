@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controller.MenuAdminController" alignment="CENTER" spacing="10">
+    <Text text="Menú de Administrador" style="-fx-font-family: 'Arial'; -fx-font-size: 24px;"/>
+    <Label fx:id="etiquetaBienvenida"/>
+
+    <!-- ComboBox para seleccionar un usuario -->
+    <ComboBox fx:id="usuarioComboBox" promptText="Seleccione un usuario" />
+
+    <Button fx:id="agregarUsuarioButton" text="Agregar Usuario" onAction="#agregarUsuario"/>
+    <Button fx:id="modificarUsuarioButton" text="Modificar Usuario" onAction="#modificarUsuario"/>
+    <Button fx:id="eliminarUsuarioButton" text="Eliminar Usuario" onAction="#eliminarUsuario"/>
+    <Button fx:id="listarUsuariosButton" text="Listar Usuarios" onAction="#listarUsuarios"/>
+    <Button fx:id="cerrarSesionButton" text="Cerrar Sesión" onAction="#cerrarSesion"/>
+</VBox>
+

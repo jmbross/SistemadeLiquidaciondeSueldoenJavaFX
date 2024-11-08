@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controller.MenuPrincipalController" alignment="CENTER" spacing="15">
+    <Text text="Menú Principal" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+    <Button fx:id="btnGestionTrabajadores" text="Gestión de Trabajadores" onAction="#handleGestionTrabajadores" visible="false"/>
+    <Button fx:id="btnGestionUsuarios" text="Gestión de Usuarios" onAction="#handleGestionUsuarios" visible="false"/>
+    <Button fx:id="btnGestionAlicuotas" text="Gestión de Alícuotas" onAction="#handleGestionAlicuotas" visible="false"/>
+    <Button fx:id="btnGenerarRecibos" text="Generar Recibos de Sueldo" onAction="#handleGenerarRecibos"/>
+    <Button text="Cerrar Sesión" onAction="#handleCerrarSesion"/>
+</VBox>

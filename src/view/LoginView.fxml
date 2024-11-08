@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controller.LoginController" alignment="CENTER" spacing="10">
+    <Text text="Sistema de Liquidación de Sueldos" style="-fx-font-family: 'Arial'; -fx-font-size: 24px;"/>
+    <TextField fx:id="emailField" promptText="Email"/>
+    <PasswordField fx:id="passwordField" promptText="Contraseña"/>
+    <Button text="Iniciar Sesión" onAction="#login"/>
+</VBox>
+
+
+
+
