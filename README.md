@@ -38,6 +38,9 @@ Administradores: Tiene acceso completo a la gestión de usuarios.
 Usuario: Solo puede gestionar los trabajadores asignados y generar recibos de sueldo.
 
 Estructura de la Base de Datos
+
+usuario: root ----- pass: admin
+
 El sistema utiliza una base de datos MySQL con la siguiente estructura de tablas:
 
 usuario:
