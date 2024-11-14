@@ -1,5 +1,6 @@
 package controller;
 
+import model.Trabajador;
 import model.Usuario;
 import service.UsuarioService;
 
@@ -9,13 +10,14 @@ import java.util.List;
 public class UsuarioController {
     private UsuarioService usuarioService;
 
+    private Trabajador trabajador;
     public UsuarioController() {
         this.usuarioService = new UsuarioService();
     }
 
     // Método para agregar un nuevo usuario
     public void agregarUsuario(String nombre, String apellido, String dni, String matricula, String email, String contrasena, String rol) {
-        Usuario usuario = new Usuario();
+        Usuario usuario = new Usuario(trabajador.getIdUsuario(), "", "");
         usuario.setNombre(nombre);
         usuario.setApellido(apellido);
         usuario.setDni(dni);
@@ -44,7 +46,7 @@ public class UsuarioController {
 
     // Método para modificar un usuario
     public void modificarUsuario(int idUsuario, String nombre, String apellido, String dni, String matricula, String email, String contrasena, String rol) {
-        Usuario usuario = new Usuario();
+        Usuario usuario = new Usuario(trabajador.getIdUsuario(), "", "");
         usuario.setIdUsuario(idUsuario);
         usuario.setNombre(nombre);
         usuario.setApellido(apellido);

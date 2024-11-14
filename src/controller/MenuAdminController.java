@@ -36,7 +36,6 @@ public class MenuAdminController {
     private UsuarioService usuarioService;
     private Map<String, Integer> usuarioIdMap; // Mapa para relacionar nombres completos con IDs
 
-
     @FXML
     private void initialize() {
         etiquetaBienvenida.setText("Bienvenido, Administrador");
@@ -115,7 +114,8 @@ public class MenuAdminController {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == confirmarButtonType) {
-                Usuario usuario = new Usuario();
+                // Aquí he reemplazado `trabajador` por un nuevo objeto Usuario
+                Usuario usuario = new Usuario(null, "", "", "", "", "", ""); // Asegúrate de que este constructor exista en Usuario
                 usuario.setNombre(nombreField.getText());
                 usuario.setApellido(apellidoField.getText());
                 usuario.setDni(dniField.getText());
@@ -131,7 +131,6 @@ public class MenuAdminController {
         // Mostrar el diálogo y capturar el resultado
         dialog.showAndWait().ifPresent(usuario -> {
             try {
-                UsuarioService usuarioService = new UsuarioService();
                 usuarioService.addUsuario(usuario);
                 mostrarAlerta("Éxito", "Usuario agregado correctamente.");
             } catch (SQLException e) {
@@ -143,7 +142,6 @@ public class MenuAdminController {
     @FXML
     private void modificarUsuario() {
         try {
-            UsuarioService usuarioService = new UsuarioService();
             List<Usuario> usuarios = usuarioService.getAllUsuarios();
 
             if (usuarios.isEmpty()) {
@@ -207,7 +205,7 @@ public class MenuAdminController {
                         usuario.setDni(dniField.getText());
                         usuario.setMatricula(matriculaField.getText());
                         usuario.setEmail(emailField.getText());
-                        usuario.setContrasena(contrasenaField.getText()); // Asegúrate de aplicar hashing si es necesario
+                        usuario.setContrasena(contrasenaField.getText());
                         usuario.setRol(rolChoiceBox.getValue());
                         return usuario;
                     }
@@ -225,23 +223,29 @@ public class MenuAdminController {
             });
 
         } catch (SQLException e) {
-            mostrarAlerta("Error", "Error al obtener usuarios: " + e.getMessage());
+            mostrarAlerta("Error", "Error al obtener los usuarios: " + e.getMessage());
         }
     }
 
+    private void mostrarAlerta(String titulo, String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titulo);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
 
     @FXML
     private void eliminarUsuario() {
         Integer idUsuario = obtenerIdUsuarioSeleccionado();
         if (idUsuario == null) {
-            mostrarAlerta("Error", "Seleccione un usuario para eliminar.");
+            mostrarAlerta("Error", "Debe seleccionar un usuario para eliminar.");
             return;
         }
 
         try {
+            // Llamamos al método deleteUsuario sin esperar un valor de retorno
             usuarioService.deleteUsuario(idUsuario);
             mostrarAlerta("Éxito", "Usuario eliminado correctamente.");
-            llenarUsuarioComboBox();
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error al eliminar el usuario: " + e.getMessage());
         }
@@ -250,23 +254,21 @@ public class MenuAdminController {
     @FXML
     private void listarUsuarios() {
         try {
-            UsuarioService usuarioService = new UsuarioService();
             List<Usuario> usuarios = usuarioService.getAllUsuarios();
-
             if (usuarios.isEmpty()) {
-                mostrarAlerta("Información", "No hay usuarios disponibles.");
+                mostrarAlerta("Información", "No hay usuarios registrados.");
                 return;
             }
 
-            StringBuilder listaUsuarios = new StringBuilder("Lista de Usuarios:\n");
+            StringBuilder usuariosListados = new StringBuilder("Usuarios registrados:\n");
             for (Usuario usuario : usuarios) {
-                listaUsuarios.append(usuario.getNombre()).append(" ").append(usuario.getApellido()).append("\n");
+                usuariosListados.append(usuario.getNombre()).append(" ").append(usuario.getApellido()).append("\n");
             }
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Lista de Usuarios");
             alert.setHeaderText(null);
-            alert.setContentText(listaUsuarios.toString());
+            alert.setContentText(usuariosListados.toString());
             alert.showAndWait();
 
         } catch (SQLException e) {
@@ -275,34 +277,11 @@ public class MenuAdminController {
     }
 
     @FXML
-    private void cerrarSesion() {
-        // Obtener la ventana actual (escenario)
-        Button source = (Button) cerrarSesionButton; // `cerrarSesionButton` debe estar definido en ambas pantallas
-        Stage currentStage = (Stage) source.getScene().getWindow();
-
-        // Cerrar la ventana actual
-        currentStage.close();
-
-        // Cargar y mostrar la ventana de inicio de sesión
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LoginView.fxml"));
-            Parent loginRoot = loader.load();
-
-            Stage loginStage = new Stage();
-            loginStage.setScene(new Scene(loginRoot));
-            loginStage.setTitle("Inicio de Sesión");
-            loginStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            mostrarAlerta("Error", "No se pudo cargar la pantalla de inicio de sesión.");
-        }
-    }
-
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+    private void cerrarSesion() throws IOException {
+        Stage stage = (Stage) cerrarSesionButton.getScene().getWindow();
+        Parent root = FXMLLoader.load(getClass().getResource("/view/LoginView.fxml"));
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 }
+

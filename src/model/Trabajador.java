@@ -1,122 +1,84 @@
 package model;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class Trabajador {
-    private int idUsuario;
     private int idTrabajador;
-    private int id;
-    private String nombre;
-    private String apellido;
-    private String dni;
-    private double sueldoBruto;
-    private String email;
-    private String telefono;
-    private Usuario usuario; // Relación obligatoria con Usuario
+    private SimpleStringProperty nombre;
+    private StringProperty apellido;
+    private StringProperty dni;
+    private DoubleProperty sueldoBruto;
+    private StringProperty email;
+    private StringProperty telefono;
+    private int idUsuario;
+    private String nombreUsuario;
 
 
-    // Constructor sin argumentos
+
+    // Constructor
     public Trabajador() {
+        this.nombre = new SimpleStringProperty();
+        this.apellido = new SimpleStringProperty();
+        this.dni = new SimpleStringProperty();
+        this.sueldoBruto = new SimpleDoubleProperty();
+        this.email = new SimpleStringProperty();
+        this.telefono = new SimpleStringProperty();
     }
 
-    public Trabajador(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    // Constructor con todos los parámetros
-    public Trabajador(String nombre, String apellido, String dni, double sueldoBruto, String email, String telefono, int idUsuario) {
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.dni = dni;
-        this.sueldoBruto = sueldoBruto;
-        this.email = email;
-        this.telefono = telefono;
-        this.idUsuario = idUsuario;
-    }
-
-    // Constructor adicional para asignar un id
+    // Constructor
     public Trabajador(int idTrabajador, String nombre, String apellido, String dni, double sueldoBruto, String email, String telefono, int idUsuario) {
         this.idTrabajador = idTrabajador;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.dni = dni;
-        this.sueldoBruto = sueldoBruto;
-        this.email = email;
-        this.telefono = telefono;
+        this.nombre = new SimpleStringProperty(nombre);
+        this.apellido = new SimpleStringProperty(apellido);
+        this.dni = new SimpleStringProperty(dni);
+        this.sueldoBruto = new SimpleDoubleProperty(sueldoBruto);
+        this.email = new SimpleStringProperty(email);
+        this.telefono = new SimpleStringProperty(telefono);
         this.idUsuario = idUsuario;
+    }
+
+    public Trabajador(int idTrabajador, String nombre, String apellido) {
+        this.idTrabajador = idTrabajador;
+        this.nombre = new SimpleStringProperty(nombre);
+        this.apellido = new SimpleStringProperty(apellido);
     }
 
     // Getters y Setters
+    public int getIdTrabajador() { return idTrabajador; }
+    public void setIdTrabajador(int idTrabajador) { this.idTrabajador = idTrabajador; }
 
-    public int getId() { return id; }
+    public String getNombre() { return nombre.get(); }
+    public void setNombre(String nombre) { this.nombre.set(nombre); }
+    public StringProperty nombreProperty() { return nombre; }
 
-    public int getIdUsuario() {
-        return idUsuario;
-    }
+    public String getApellido() { return apellido.get(); }
+    public void setApellido(String apellido) { this.apellido.set(apellido); }
+    public StringProperty apellidoProperty() { return apellido; }
 
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
+    public String getDni() { return dni.get(); }
+    public void setDni(String dni) { this.dni.set(dni); }
+    public StringProperty dniProperty() { return dni; }
 
-    public int getIdTrabajador() {
-        return idTrabajador;
-    }
+    public double getSueldoBruto() { return sueldoBruto.get(); }
+    public void setSueldoBruto(double sueldoBruto) { this.sueldoBruto.set(sueldoBruto); }
+    public DoubleProperty sueldoBrutoProperty() { return sueldoBruto; }
 
-    public void setIdTrabajador(int idTrabajador) {
-        this.idTrabajador = idTrabajador;
-    }
+    public String getEmail() { return email.get(); }
+    public void setEmail(String email) { this.email.set(email); }
+    public StringProperty emailProperty() { return email; }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public String getTelefono() { return telefono.get(); }
+    public void setTelefono(String telefono) { this.telefono.set(telefono); }
+    public StringProperty telefonoProperty() { return telefono; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    public int getIdUsuario() { return idUsuario; }
+    public void setIdUsuario(int idUsuario) { this.idUsuario = idUsuario; }
 
-    public String getApellido() {
-        return apellido;
-    }
+    public String getNombreUsuario() { return nombreUsuario; }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
+    public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
 
-    public String getDni() {
-        return dni;
-    }
-
-    public void setDni(String dni) {
-        this.dni = dni;
-    }
-
-    public double getSueldoBruto() {
-        return sueldoBruto;
-    }
-
-    public void setSueldoBruto(double sueldoBruto) {
-        this.sueldoBruto = sueldoBruto;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
 }

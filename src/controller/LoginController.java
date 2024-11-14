@@ -22,6 +22,7 @@ public class LoginController {
     @FXML
     private PasswordField passwordField;
     private Connection connection;
+    public static int idUsuarioActual;
 
     public LoginController() {
         this.connection = DatabaseConnection.getConnection();
@@ -41,6 +42,7 @@ public class LoginController {
 
             if (resultSet.next()) {
                 rolActual = resultSet.getString("rol");
+                idUsuarioActual = resultSet.getInt("id_usuario");  // Asignar el ID del usuario
                 showAlert("Inicio de Sesión", "Bienvenido " + rolActual, Alert.AlertType.INFORMATION);
 
                 if ("admin".equals(rolActual)) {

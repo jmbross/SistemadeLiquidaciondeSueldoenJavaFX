@@ -2,180 +2,257 @@ package service;
 
 import database.DatabaseConnection;
 import model.Trabajador;
-import model.Usuario;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import model.Alicuota;
+import java.sql.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import static service.AlicuotaService.connection;
 
+/**
+ * Servicio para realizar operaciones CRUD en la tabla Trabajador.
+ */
 public class TrabajadorService {
 
-    private final UsuarioService usuarioService;
+
+    private Connection connection;
 
     public TrabajadorService() {
-        this.usuarioService = new UsuarioService(); // Asume que el UsuarioService puede usarse directamente
+        // Conexión a la base de datos
+        try {
+            this.connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/gestion_sueldos", "root", "admin");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    // Verificar existencia de Trabajador por DNI
-    public boolean existeDni(String dni) {
-        String query = "SELECT COUNT(*) FROM trabajador WHERE dni = ?";
+
+    public boolean agregarTrabajador(Trabajador trabajador) {
+        String sql = "INSERT INTO trabajador (nombre, apellido, dni, sueldo_bruto, email, telefono, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, dni);
+             PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, trabajador.getNombre());
+            stmt.setString(2, trabajador.getApellido());
+            stmt.setString(3, trabajador.getDni());
+            stmt.setDouble(4, trabajador.getSueldoBruto());
+            stmt.setString(5, trabajador.getEmail());
+            stmt.setString(6, trabajador.getTelefono());
+            stmt.setInt(7, trabajador.getIdUsuario());
 
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getInt(1) > 0;
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                // Obtener el ID generado para el trabajador
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        trabajador.setIdTrabajador(generatedKeys.getInt(1));
+                    }
                 }
+
+                // Crear alícuotas por defecto para el trabajador
+                crearAlicuotasPorDefecto(connection, trabajador.getIdTrabajador());
+
+                return true;
             }
         } catch (SQLException e) {
-            System.err.println("Error al verificar existencia de DNI: " + e.getMessage());
+            e.printStackTrace();
         }
-
         return false;
     }
 
-    // Método para agregar un Trabajador
-    public void addTrabajador(Trabajador trabajador) throws SQLException {
-        String query = "INSERT INTO trabajador (nombre, apellido, dni, sueldo_bruto, email, telefono, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    // Método para listar todos los trabajadores
+    public ObservableList<Trabajador> listarTrabajadores() {
+        ObservableList<Trabajador> trabajadores = FXCollections.observableArrayList();
+        String query = "SELECT * FROM trabajador"; // Asegúrate de usar el nombre correcto de la tabla
 
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, trabajador.getNombre());
-            statement.setString(2, trabajador.getApellido());
-            statement.setString(3, trabajador.getDni());
-            statement.setDouble(4, trabajador.getSueldoBruto());
-            statement.setString(5, trabajador.getEmail());
-            statement.setString(6, trabajador.getTelefono());
-            statement.setInt(7, trabajador.getUsuario().getIdUsuario());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("Error al agregar trabajador: " + e.getMessage());
-            throw e;
-        }
-    }
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
 
-    // Nuevo método para guardar un trabajador
-    public boolean guardarTrabajador(Trabajador trabajador) {
-        try {
-            addTrabajador(trabajador);
-            return true; // Si el trabajador se guarda correctamente, devuelve true
-        } catch (SQLException e) {
-            System.err.println("Error al guardar el trabajador: " + e.getMessage());
-            return false;
-        }
-    }
-
-    // Método para obtener todos los Trabajadores
-    public List<Trabajador> obtenerTodosLosTrabajadores() throws SQLException {
-        List<Trabajador> trabajadores = new ArrayList<>();
-        String query = "SELECT * FROM trabajador";
-
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query);
-             ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
-                Trabajador trabajador = new Trabajador();
-                trabajador.setIdTrabajador(resultSet.getInt("id_trabajador"));
-                trabajador.setNombre(resultSet.getString("nombre"));
-                trabajador.setApellido(resultSet.getString("apellido"));
-                trabajador.setDni(resultSet.getString("dni"));
-                trabajador.setSueldoBruto(resultSet.getDouble("sueldo_bruto"));
-                trabajador.setEmail(resultSet.getString("email"));
-                trabajador.setTelefono(resultSet.getString("telefono"));
-
-                // Obtiene y asigna el Usuario asociado
-                int idUsuario = resultSet.getInt("id_usuario");
-                Usuario usuario = usuarioService.getUsuarioById(idUsuario);
-                trabajador.setUsuario(usuario);
-
+            while (rs.next()) {
+                int idTrabajador = rs.getInt("id_trabajador");
+                String nombre = rs.getString("nombre");
+                String apellido = rs.getString("apellido");
+                Trabajador trabajador = new Trabajador(idTrabajador, nombre, apellido);
                 trabajadores.add(trabajador);
             }
         } catch (SQLException e) {
-            System.err.println("Error al obtener trabajadores: " + e.getMessage());
-            throw e;
+            e.printStackTrace();
         }
+
         return trabajadores;
     }
 
-    // Método para obtener un Trabajador por su DNI
-    public Trabajador obtenerTrabajadorPorDni(String dni) {
-        Trabajador trabajador = null;
-        String query = "SELECT * FROM trabajador WHERE dni = ?";
+    // Método para crear las alícuotas por defecto
+    private void crearAlicuotasPorDefecto(Connection connection, int idTrabajador) throws SQLException {
+        String sqlAlicuota = "INSERT INTO alicuota (descripcion, porcentaje, id_trabajador) VALUES (?, ?, ?)";
+
+        try (PreparedStatement stmtAlicuota = connection.prepareStatement(sqlAlicuota)) {
+            // Alícuota de Jubilacion
+            stmtAlicuota.setString(1, "Jubilacion");
+            stmtAlicuota.setDouble(2, 10.0);
+            stmtAlicuota.setInt(3, idTrabajador);
+            stmtAlicuota.executeUpdate();
+
+            // Alícuota de Ley 4350
+            stmtAlicuota.setString(1, "Ley 4350");
+            stmtAlicuota.setDouble(2, 5.0);
+            stmtAlicuota.setInt(3, idTrabajador);
+            stmtAlicuota.executeUpdate();
+
+            // Alícuota de Descuentos Varios
+            stmtAlicuota.setString(1, "Descuentos Varios");
+            stmtAlicuota.setDouble(2, 2.0);
+            stmtAlicuota.setInt(3, idTrabajador);
+            stmtAlicuota.executeUpdate();
+        }
+    }
+
+
+    /**
+     * Modifica los datos de un trabajador existente en la base de datos.
+     * @param trabajador el objeto Trabajador con los datos modificados
+     * @return true si el trabajador se actualizó con éxito, false en caso contrario
+     */
+    public boolean modificarTrabajador(Trabajador trabajador) {
+        String sql = "UPDATE trabajador SET nombre = ?, apellido = ?, dni = ?, sueldo_bruto = ?, email = ?, telefono = ?, id_usuario = ? WHERE id_trabajador = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, dni);
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, trabajador.getNombre());
+            stmt.setString(2, trabajador.getApellido());
+            stmt.setString(3, trabajador.getDni());
+            stmt.setDouble(4, trabajador.getSueldoBruto());
+            stmt.setString(5, trabajador.getEmail());
+            stmt.setString(6, trabajador.getTelefono());
+            stmt.setInt(7, trabajador.getIdUsuario());
+            stmt.setInt(8, trabajador.getIdTrabajador());
 
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    trabajador = new Trabajador();
-                    trabajador.setIdTrabajador(resultSet.getInt("id_trabajador"));
-                    trabajador.setNombre(resultSet.getString("nombre"));
-                    trabajador.setApellido(resultSet.getString("apellido"));
-                    trabajador.setDni(resultSet.getString("dni"));
-                    trabajador.setSueldoBruto(resultSet.getDouble("sueldo_bruto"));
-                    trabajador.setEmail(resultSet.getString("email"));
-                    trabajador.setTelefono(resultSet.getString("telefono"));
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
-                    int idUsuario = resultSet.getInt("id_usuario");
-                    Usuario usuario = usuarioService.getUsuarioById(idUsuario);
-                    trabajador.setUsuario(usuario);
+    /**
+     * Elimina un trabajador de la base de datos por su ID.
+     * @param idTrabajador el ID del trabajador a eliminar
+     * @return true si el trabajador se eliminó con éxito, false en caso contrario
+     */
+    public boolean eliminarTrabajador(int idTrabajador) {
+        String sql = "DELETE FROM trabajador WHERE id_trabajador = ?";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, idTrabajador);
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Obtiene un ObservableList con todos los trabajadores de un usuario específico.
+     * @param idUsuario el ID del usuario asociado a los trabajadores
+     * @return una lista observable de trabajadores
+     */
+    public ObservableList<Trabajador> listarTrabajadoresPorUsuario(int idUsuario) {
+        ObservableList<Trabajador> listaTrabajadores = FXCollections.observableArrayList();
+        String sql = "SELECT * FROM trabajador WHERE id_usuario = ?";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, idUsuario);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Trabajador trabajador = new Trabajador();
+                    trabajador.setIdTrabajador(rs.getInt("id_trabajador"));
+                    trabajador.setNombre(rs.getString("nombre"));
+                    trabajador.setApellido(rs.getString("apellido"));
+                    trabajador.setDni(rs.getString("dni"));
+                    trabajador.setSueldoBruto(rs.getDouble("sueldo_bruto"));
+                    trabajador.setEmail(rs.getString("email"));
+                    trabajador.setTelefono(rs.getString("telefono"));
+                    trabajador.setIdUsuario(rs.getInt("id_usuario"));
+
+                    listaTrabajadores.add(trabajador);
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Error al obtener trabajador por DNI: " + e.getMessage());
+            e.printStackTrace();
         }
-        return trabajador;
+        return listaTrabajadores;
     }
 
-    // Método para actualizar un Trabajador existente
-    public boolean actualizarTrabajador(String dni, String nombre, String apellido, double sueldoBruto) throws SQLException {
-        String query = "UPDATE trabajador SET nombre = ?, apellido = ?, sueldo_bruto = ? WHERE dni = ?";
+    /**
+     * Busca un trabajador en la base de datos por su ID.
+     * @param idTrabajador el ID del trabajador a buscar
+     * @return el objeto Trabajador si se encuentra, o null si no existe
+     */
+    public Trabajador buscarTrabajadorPorId(int idTrabajador) {
+        String sql = "SELECT * FROM trabajador WHERE id_trabajador = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, nombre);
-            statement.setString(2, apellido);
-            statement.setDouble(3, sueldoBruto);
-            statement.setString(4, dni);
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, idTrabajador);
 
-            return statement.executeUpdate() > 0;
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Trabajador trabajador = new Trabajador();
+                    trabajador.setIdTrabajador(rs.getInt("id_trabajador"));
+                    trabajador.setNombre(rs.getString("nombre"));
+                    trabajador.setApellido(rs.getString("apellido"));
+                    trabajador.setDni(rs.getString("dni"));
+                    trabajador.setSueldoBruto(rs.getDouble("sueldo_bruto"));
+                    trabajador.setEmail(rs.getString("email"));
+                    trabajador.setTelefono(rs.getString("telefono"));
+                    trabajador.setIdUsuario(rs.getInt("id_usuario"));
+                    return trabajador;
+                }
+            }
         } catch (SQLException e) {
-            System.err.println("Error al actualizar trabajador: " + e.getMessage());
-            throw e;
+            e.printStackTrace();
         }
+        return null;
+    }
+    // Método para obtener todos los trabajadores sin un idUsuario
+    public ObservableList<Trabajador> obtenerTodosLosTrabajadores() {
+        ObservableList<Trabajador> listaTrabajadores = FXCollections.observableArrayList();
+        String sql = "SELECT * FROM trabajador";  // Se elimina el filtro por id_usuario
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Trabajador trabajador = new Trabajador();
+                trabajador.setIdTrabajador(rs.getInt("id_trabajador"));
+                trabajador.setNombre(rs.getString("nombre"));
+                trabajador.setApellido(rs.getString("apellido"));
+                trabajador.setDni(rs.getString("dni"));
+                trabajador.setSueldoBruto(rs.getDouble("sueldo_bruto"));
+                trabajador.setEmail(rs.getString("email"));
+                trabajador.setTelefono(rs.getString("telefono"));
+                trabajador.setIdUsuario(rs.getInt("id_usuario"));
+
+                listaTrabajadores.add(trabajador);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return listaTrabajadores;
     }
 
-    // Método para eliminar un Trabajador por su ID
-    public boolean deleteTrabajadorById(int idTrabajador) throws SQLException {
-        String query = "DELETE FROM trabajador WHERE id_trabajador = ?";
-
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, idTrabajador);
-            return statement.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.err.println("Error al eliminar trabajador: " + e.getMessage());
-            throw e;
-        }
-    }
-
-    // Método para eliminar un Trabajador por su DNI
-    public boolean eliminarTrabajadorPorDni(String dni) {
-        String sql = "DELETE FROM trabajador WHERE dni = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, dni);
-            int rowsAffected = statement.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            System.err.println("Error al eliminar trabajador por DNI: " + e.getMessage());
-            return false;
-        }
+    public double calcularSueldoNeto(Trabajador trabajador) {
+        double sueldoBruto = trabajador.getSueldoBruto();
+        double totalPorcentaje = AlicuotaService.obtenerAlicuotasPorTrabajador(trabajador.getIdTrabajador())
+                .stream()
+                .mapToDouble(Alicuota::getPorcentaje)
+                .sum();
+        return sueldoBruto * (1 - totalPorcentaje / 100);
     }
 }

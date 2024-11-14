@@ -5,12 +5,24 @@
 
 <VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controller.MenuUsuarioController" alignment="CENTER" spacing="10">
     <Text text="Menú de Usuario" style="-fx-font-family: 'Arial'; -fx-font-size: 24px;"/>
+
+    <!-- Botones CRUD -->
     <Button fx:id="agregarTrabajadorButton" text="Agregar Trabajador" onAction="#agregarTrabajador"/>
     <Button fx:id="modificarTrabajadorButton" text="Modificar Trabajador" onAction="#modificarTrabajador"/>
     <Button fx:id="eliminarTrabajadorButton" text="Eliminar Trabajador" onAction="#eliminarTrabajador"/>
     <Button fx:id="listarTrabajadoresButton" text="Listar Trabajadores" onAction="#listarTrabajadores"/>
-<!--    <Button text="Generar Recibo de Sueldo" onAction="#generarRecibo"/>-->
+
+    <!-- Nuevo botón para gestionar alícuotas -->
+    <Button fx:id="gestionarAlicuotasButton" text="Gestionar Alícuotas" onAction="#gestionarAlicuotas"/>
+
+    <TableView fx:id="trabajadorTable" visible="false" prefWidth="500" prefHeight="400">
+        <TableColumn fx:id="nombreColumn" text="Nombre" />
+        <TableColumn fx:id="apellidoColumn" text="Apellido" />
+        <TableColumn fx:id="dniColumn" text="DNI" />
+        <TableColumn fx:id="sueldoColumn" text="Sueldo" />
+        <TableColumn fx:id="emailColumn" text="Email" />
+        <TableColumn fx:id="telefonoColumn" text="Teléfono" />
+    </TableView>
+
     <Button fx:id="cerrarSesionButton" text="Cerrar Sesión" onAction="#cerrarSesion" />
 </VBox>
-
-

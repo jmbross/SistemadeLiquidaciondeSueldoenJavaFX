@@ -10,7 +10,29 @@ public class Usuario {
     private String contrasena;
     private String rol;
 
+    public Usuario() {
+    }
+
+    // Constructor que acepta id_usuario, nombre y apellido
+    public Usuario(int idUsuario, String nombre, String apellido) {
+        this.idUsuario = idUsuario;
+        this.nombre = nombre;
+        this.apellido = apellido;
+    }
+
+    public Usuario(String nombre, String apellido, String dni, String matricula, String email, String contrasena, String rol) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.dni = dni;
+        this.matricula = matricula;
+        this.email = email;
+        this.contrasena = contrasena;
+        this.rol = rol;
+    }
+
     // Getters y Setters para cada atributo
+
+
     public int getIdUsuario() {
         return idUsuario;
     }

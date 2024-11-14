@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controller.AlicuotaController">
+    <TableView fx:id="alicuotaTable" prefHeight="200">
+        <columns>
+            <TableColumn fx:id="descripcionColumn" text="Descripción"/>
+            <TableColumn fx:id="porcentajeColumn" text="Porcentaje"/>
+        </columns>
+    </TableView>
+
+    <TextField fx:id="txtDescripcion" promptText="Descripción"/>
+    <TextField fx:id="txtPorcentaje" promptText="Porcentaje"/>
+    <ComboBox fx:id="cmbTrabajador" promptText="Seleccionar Trabajador"/>
+
+    <Button fx:id="btnAgregarAlicuota" text="Agregar" onAction="#agregarAlicuota"/>
+    <Button fx:id="btnModificarAlicuota" text="Modificar" onAction="#modificarAlicuota"/>
+    <Button fx:id="btnEliminarAlicuota" text="Eliminar" onAction="#eliminarAlicuota"/>
+    <Button fx:id="btnVolver" text="Volver" onAction="#volverMenu"/>
+</VBox>
+
+

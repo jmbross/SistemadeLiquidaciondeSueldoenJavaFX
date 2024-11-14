@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="controller.TrabajadorController" hgap="10" vgap="10" style="-fx-padding: 20 20 20 20;">
+
+    <!-- Campo de texto para Nombre -->
+    <Label text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+    <TextField fx:id="txtNombre" promptText="Nombre" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+    <!-- Campo de texto para Apellido -->
+    <Label text="Apellido:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+    <TextField fx:id="txtApellido" promptText="Apellido" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+    <!-- Campo de texto para DNI -->
+    <Label text="DNI:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+    <TextField fx:id="txtDNI" promptText="DNI" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+    <!-- Campo de texto para Sueldo Bruto -->
+    <Label text="Sueldo Bruto:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+    <TextField fx:id="txtSueldoBruto" promptText="Sueldo Bruto" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+    <!-- Campo de texto para Email -->
+    <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+    <TextField fx:id="txtEmail" promptText="Email" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+    <!-- Campo de texto para Teléfono -->
+    <Label text="Teléfono:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+    <TextField fx:id="txtTelefono" promptText="Teléfono" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+    <!-- ComboBox para seleccionar Usuario -->
+    <Label text="Usuario:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+    <ComboBox fx:id="cmbUsuario" promptText="Seleccionar Usuario" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+
+    <!-- Botones para CRUD -->
+    <HBox spacing="10" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="7">
+        <Button fx:id="btnAgregar" text="Agregar" onAction="#agregarTrabajador"/>
+        <Button fx:id="btnModificar" text="Modificar" onAction="#modificarTrabajador"/>
+        <Button fx:id="btnEliminar" text="Eliminar" onAction="#eliminarTrabajador"/>
+        <Button fx:id="btnListar" text="Listar" onAction="#listarTrabajadores"/>
+        <Button text="Generar Recibo de Sueldo" onAction="#generarReciboSueldo"/>
+        <Button fx:id="btnVolver" text="Volver" onAction="#volverMenu"/>
+    </HBox>
+
+    <!-- Tabla para mostrar los trabajadores -->
+    <TableView fx:id="tablaTrabajadores" GridPane.columnIndex="0" GridPane.rowIndex="8" GridPane.columnSpan="2">
+        <columns>
+            <TableColumn fx:id="colNombre" text="Nombre" prefWidth="100"/>
+            <TableColumn fx:id="colApellido" text="Apellido" prefWidth="100"/>
+            <TableColumn fx:id="colDni" text="DNI" prefWidth="80"/>
+            <TableColumn fx:id="colSueldoBruto" text="Sueldo Bruto" prefWidth="100"/>
+            <TableColumn fx:id="colEmail" text="Email" prefWidth="150"/>
+            <TableColumn fx:id="colTelefono" text="Teléfono" prefWidth="100"/>
+            <TableColumn fx:id="colUsuario" text="Usuario" prefWidth="100"/>
+        </columns>
+    </TableView>
+
+</GridPane>
+

@@ -7,6 +7,7 @@ public class Recibo {
     private Trabajador trabajador; // Relación obligatoria con Trabajador
     private Date fecha;
     private double sueldoNeto;
+    private int idTrabajador;
 
     public Recibo() {
     }
@@ -25,6 +26,14 @@ public class Recibo {
 
     public void setIdRecibo(int idRecibo) {
         this.idRecibo = idRecibo;
+    }
+
+    public int getIdTrabajador() {
+        return idTrabajador;
+    }
+
+    public void setIdTrabajador(int idTrabajador) {
+        this.idTrabajador = idTrabajador;
     }
 
     public Trabajador getTrabajador() {
