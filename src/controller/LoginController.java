@@ -83,6 +83,10 @@ public class LoginController {
             Stage stage = new Stage();
             stage.setScene(new Scene(fxmlLoader.load()));
             stage.setTitle("Menú de Usuario");
+
+            // Llamar a setCurrentUserRole después de cargar la vista
+            MenuUsuarioController controller = fxmlLoader.getController();
+            controller.setCurrentUserRole(rolActual);  // Establecer el rol en la vista de usuario
             stage.show();
 
             // Cerrar ventana de login actual
@@ -101,3 +105,4 @@ public class LoginController {
         alert.showAndWait();
     }
 }
+

@@ -12,17 +12,16 @@
     <Button fx:id="eliminarTrabajadorButton" text="Eliminar Trabajador" onAction="#eliminarTrabajador"/>
     <Button fx:id="listarTrabajadoresButton" text="Listar Trabajadores" onAction="#listarTrabajadores"/>
 
-    <!-- Nuevo botón para gestionar alícuotas -->
-    <Button fx:id="gestionarAlicuotasButton" text="Gestionar Alícuotas" onAction="#gestionarAlicuotas"/>
+    <children>
+        <TableView fx:id="trabajadorTable" layoutX="50.0" layoutY="150.0" prefWidth="600.0" prefHeight="400.0">
+            <columns>
+                <TableColumn fx:id="colIdTrabajador" text="ID" prefWidth="100.0"/>
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="200.0"/>
+                <TableColumn fx:id="colApellido" text="Apellido" prefWidth="200.0"/>
+                <TableColumn fx:id="colSueldoBruto" text="Sueldo Bruto" prefWidth="100.0"/>
+            </columns>
+        </TableView>
+        <Button fx:id="cerrarSesionButton" text="Cerrar Sesion" layoutX="50.0" layoutY="600.0" onAction="#cerrarSesion"/>
 
-    <TableView fx:id="trabajadorTable" visible="false" prefWidth="500" prefHeight="400">
-        <TableColumn fx:id="nombreColumn" text="Nombre" />
-        <TableColumn fx:id="apellidoColumn" text="Apellido" />
-        <TableColumn fx:id="dniColumn" text="DNI" />
-        <TableColumn fx:id="sueldoColumn" text="Sueldo" />
-        <TableColumn fx:id="emailColumn" text="Email" />
-        <TableColumn fx:id="telefonoColumn" text="Teléfono" />
-    </TableView>
-
-    <Button fx:id="cerrarSesionButton" text="Cerrar Sesión" onAction="#cerrarSesion" />
+    </children>
 </VBox>

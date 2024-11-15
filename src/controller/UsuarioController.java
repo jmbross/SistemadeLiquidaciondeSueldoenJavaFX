@@ -1,18 +1,43 @@
 package controller;
 
+import javafx.fxml.FXML;
+import javafx.stage.Stage;
 import model.Trabajador;
 import model.Usuario;
 import service.UsuarioService;
+import javafx.scene.control.Label;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public class UsuarioController {
-    private UsuarioService usuarioService;
 
+    @FXML
+    private Label roleLabel;
+    private UsuarioService usuarioService;
     private Trabajador trabajador;
     public UsuarioController() {
         this.usuarioService = new UsuarioService();
+    }
+
+    public void initialize() {
+        // Asegúrate de que roleLabel esté definido correctamente
+        roleLabel.setText("Rol: " + LoginController.rolActual);
+    }
+
+    // Método para asignar el rol del usuario al label
+    public void setCurrentUserRole(String role) {
+        if (roleLabel != null) {
+            roleLabel.setText("Rol: " + role);  // Se asigna el texto al label
+        } else {
+            System.err.println("Error: roleLabel is not initialized.");
+        }
+    }
+
+    // Método para cerrar la ventana actual (ejemplo de redirección a otra vista)
+    public void cerrarVentana() {
+        Stage stage = (Stage) roleLabel.getScene().getWindow();
+        stage.close();
     }
 
     // Método para agregar un nuevo usuario

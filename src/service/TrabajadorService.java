@@ -6,13 +6,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Alicuota;
 import java.sql.*;
+import java.util.List;
 
 import static service.AlicuotaService.connection;
 
-/**
- * Servicio para realizar operaciones CRUD en la tabla Trabajador.
- */
 public class TrabajadorService {
+
 
 
     private Connection connection;
@@ -26,8 +25,7 @@ public class TrabajadorService {
         }
     }
 
-
-    public boolean agregarTrabajador(Trabajador trabajador) {
+        public boolean agregarTrabajador(Trabajador trabajador) {
         String sql = "INSERT INTO trabajador (nombre, apellido, dni, sueldo_bruto, email, telefono, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = DatabaseConnection.getConnection();

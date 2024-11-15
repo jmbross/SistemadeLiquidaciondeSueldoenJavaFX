@@ -16,9 +16,7 @@ public class Trabajador {
     private int idUsuario;
     private String nombreUsuario;
 
-
-
-    // Constructor
+    // Constructor para crear un trabajador vacío
     public Trabajador() {
         this.nombre = new SimpleStringProperty();
         this.apellido = new SimpleStringProperty();
@@ -28,7 +26,17 @@ public class Trabajador {
         this.telefono = new SimpleStringProperty();
     }
 
-    // Constructor
+    // Constructor sin ID de trabajador, utilizado para crear un nuevo trabajador
+    public Trabajador(String nombre, String apellido, String dni, double sueldoBruto, String email, String telefono) {
+        this.nombre = new SimpleStringProperty();
+        this.apellido = new SimpleStringProperty();
+        this.dni = new SimpleStringProperty();
+        this.sueldoBruto = new SimpleDoubleProperty();
+        this.email = new SimpleStringProperty();
+        this.telefono = new SimpleStringProperty();
+    }
+
+    // Constructor completo con todos los campos
     public Trabajador(int idTrabajador, String nombre, String apellido, String dni, double sueldoBruto, String email, String telefono, int idUsuario) {
         this.idTrabajador = idTrabajador;
         this.nombre = new SimpleStringProperty(nombre);
@@ -40,10 +48,23 @@ public class Trabajador {
         this.idUsuario = idUsuario;
     }
 
+    // Constructor con solo idTrabajador, nombre y apellido
     public Trabajador(int idTrabajador, String nombre, String apellido) {
         this.idTrabajador = idTrabajador;
         this.nombre = new SimpleStringProperty(nombre);
         this.apellido = new SimpleStringProperty(apellido);
+        this.dni = new SimpleStringProperty(""); // dni vacío por defecto
+        this.sueldoBruto = new SimpleDoubleProperty(0.0); // sueldoBruto por defecto
+        this.email = new SimpleStringProperty(""); // email vacío por defecto
+        this.telefono = new SimpleStringProperty(""); // telefono vacío por defecto
+        this.idUsuario = 0; // idUsuario por defecto
+    }
+
+    public Trabajador(int idTrabajador, String nombre, String apellido, double sueldoBruto) {
+        this.idTrabajador = idTrabajador;
+        this.nombre = new SimpleStringProperty(nombre);
+        this.apellido = new SimpleStringProperty(apellido);
+        this.sueldoBruto = new SimpleDoubleProperty(0.0); // sueldoBruto por defecto
     }
 
     // Getters y Setters
@@ -78,7 +99,5 @@ public class Trabajador {
     public void setIdUsuario(int idUsuario) { this.idUsuario = idUsuario; }
 
     public String getNombreUsuario() { return nombreUsuario; }
-
     public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
-
 }

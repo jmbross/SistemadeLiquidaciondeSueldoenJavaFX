@@ -36,10 +36,10 @@
     <!-- Botones para CRUD -->
     <HBox spacing="10" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="7">
         <Button fx:id="btnAgregar" text="Agregar" onAction="#agregarTrabajador"/>
-        <Button fx:id="btnModificar" text="Modificar" onAction="#modificarTrabajador"/>
-        <Button fx:id="btnEliminar" text="Eliminar" onAction="#eliminarTrabajador"/>
-        <Button fx:id="btnListar" text="Listar" onAction="#listarTrabajadores"/>
-        <Button text="Generar Recibo de Sueldo" onAction="#generarReciboSueldo"/>
+<!--        <Button fx:id="btnModificar" text="Modificar" onAction="#modificarTrabajador"/>-->
+<!--        <Button fx:id="btnEliminar" text="Eliminar" onAction="#eliminarTrabajador"/>-->
+<!--        <Button fx:id="btnListar" text="Listar" onAction="#listarTrabajadores"/>-->
+<!--        <Button text="Generar Recibo de Sueldo" onAction="#generarReciboSueldo"/>-->
         <Button fx:id="btnVolver" text="Volver" onAction="#volverMenu"/>
     </HBox>
 
